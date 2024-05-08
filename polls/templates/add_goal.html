@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}목표 추가{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">새로운 목표를 추가해보자!</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="card p-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">목표 제목</label>
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.day_of_week.id_for_label }}" class="form-label">요일 선택</label>
+                    {{ form.day_of_week }}
+                </div>
+                <button type="submit" class="btn btn-primary">추가하기</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="{% url 'polls:goal_list' %}" class="btn btn-secondary">목표 목록으로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

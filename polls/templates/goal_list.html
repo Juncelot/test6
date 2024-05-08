@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}목표 목록{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4 text-center">나의 이번 주 목표!</h1>
+    <form method="post" enctype="multipart/form-data" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">새로운 목표 추가</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.day_of_week.id_for_label }}" class="form-label">요일 선택</label>
+            {{ form.day_of_week }}
+        </div>
+        <button type="submit" class="btn btn-primary">추가</button>
+    </form>
+    <div class="goal-list">
+        {% for weekday, goals in weekday_goals.items %}
+        <div class="weekday-item">
+            <h3>{{ weekday }}</h3>
+            {% for goal in goals %}
+            <div class="goal-item card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span>{{ goal.title }}</span>
+                        </div>
+                        <div>
+                            <input type="checkbox" {% if goal.completed %}checked{% endif %} onclick="location.href='{% url 'polls:complete_goal' goal.id %}'" class="form-check-input me-2">
+                            <a href="{% url 'polls:delete_goal' goal.id %}" class="btn btn-danger btn-sm">삭제</a>
+                        </div>
+                    </div>
+                    <form method="post" enctype="multipart/form-data" class="mt-3" action="{% url 'polls:add_reflection' goal.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="reflection-{{ goal.id }}" class="form-label">오늘의 느낀 점</label>
+                            <textarea name="reflection" rows="3" class="form-control" id="reflection-{{ goal.id }}">{{ goal.reflection }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image-{{ goal.id }}" class="form-label">사진 첨부</label>
+                            <input type="file" name="image" class="form-control" id="image-{{ goal.id }}">
+                        </div>
+                        {% if goal.image %}
+                        <div class="mb-3">
+                            <img src="{{ goal.image.url }}" alt="Goal Image" class="img-fluid">
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center">이 요일에는 아직 목표가 없어요.</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="mt-4 text-center">
+        <a href="{% url 'polls:history' %}" class="btn btn-secondary">지난 주 기록 보기</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .goal-list {
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #fff;
+    }
+    .weekday-item {
+        margin-bottom: 30px;
+    }
+    .goal-item {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .goal-item:last-child {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}

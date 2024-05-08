@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Reflection 수정{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Reflection 수정하기</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data" class="card p-4">
+                {% csrf_token %}
+                <p class="mb-3">{{ goal.title }}</p>
+                <div class="mb-3">
+                    <label for="reflection" class="form-label">Reflection 작성</label>
+                    <textarea name="reflection" rows="5" cols="50" class="form-control">{{ goal.reflection }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">사진 선택</label>
+                    <input type="file" name="image" class="form-control">
+                    {% if goal.image %}
+                        <p class="mt-2">현재 사진: <a href="{{ goal.image.url }}" target="_blank">{{ goal.image.name }}</a></p>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">저장하기</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="{% url 'polls:goal_list' %}" class="btn btn-secondary">목표 목록으로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
